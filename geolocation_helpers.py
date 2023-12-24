@@ -1,10 +1,21 @@
 from geopy.geocoders import Nominatim
 import pandas as pd
 import numpy as np
+import time
+from geopy.exc import GeocoderTimedOut
+
+def do_geocode(geolocator, address):
+    try:
+        return geolocator.geocode(address, addressdetails=True, timeout=100)
+    except GeocoderTimedOut:
+        time.sleep(1)
+        return do_geocode(geolocator, address)
 
 def get_district(address):
     geolocator = Nominatim(user_agent='new_geolocator')
-    location = geolocator.geocode(f'{address} Warszawa', addressdetails=True)
+    location = do_geocode(geolocator, f'{address} Warszawa')
+    #location = geolocator.geocode(f'{address} Warszawa', addressdetails=True, timeout=None)
+    time.sleep(1)
     if location:
         district = location.raw.get('address').get('suburb')
         subdistrict = location.raw.get('address').get('quarter')
