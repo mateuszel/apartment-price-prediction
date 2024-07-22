@@ -44,7 +44,7 @@ After that I imputed missing values by calculating the probability of apartment 
 * Plotting the relation between **b_type** and **built** allowed me to easily impute missing values based on corresponding **b_type** / **built** column since they are heavily related(as shown below).
 ![Image 2](img/btyp.png)
 * In **elevator** column after plotting the data I noticed some incorrext values. I've overriden the previous data by choosing what % of buildings of each height should have an elevator.
-![Image 2](img/elev.png)
+![Image 3](img/elev.png)
 
 #### Feature Engineering
 Initially I converted **location** column into four new ones: **district**, **subdistrct**, **nbhood**, **street** using ``Geopy``. According to my research, a column **distance** containing distances from apartments to city center is very useful. Because there was too many missing values in **nbood** and **street** I calculated the distances based on subdistrict*. Using ``Google GeoCoding API`` I extracted coordinates of each **subdistrict's** center, then for each apartment I set **distance** to Euclidean distance between its **subdistrict** center and city center + noise.
@@ -81,3 +81,16 @@ Numerical features were scaled using ``StandardScaler``.
 
 #### Linear Regression | Ridge Regression | Lasso Regression | ElasticNet with GridSearch
 
+All these models performed very similarly, so I will only show results from Linear Regression.
+
+| Metric  | Value                |
+|---------|----------------------|
+| MAE     | 213704.82419916763   |
+| MSE     | 124225930474.904     |
+| RMSE    | 352456.9909576259    |
+| R²      | 0.7489847425925041   |
+
+As we can see the model doesn't perform perfectly with RMSE being very high. However R² score implies that the model is reasonably well fit.
+![Image 3](img/linreg.png)
+After inspecting these plots we can see that the model clearly has trouble with predicting apartments that have bigger value. \
+Additionally we can see that the model generalises pretty well, but it's too simple to learn all paterns in data(slow growth of validation curve). 
