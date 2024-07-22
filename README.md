@@ -39,11 +39,15 @@ Methods of imputing missing values in selected columns:
 * Values in column **rent** are strongly connected to 
 both **area* and *district**, so I imputed missing values by calculating mean **rent_per_sqm** for each **district** and multiplying it by apartments **area**.
 * For columns **balcony**, **terrace** and **garden** I was able to eliminate some incorrect data after plotting it:
+
 ![Image 1](img/bal_ter_gar.png)
+
 After that I imputed missing values by calculating the probability of apartment having a **balcony** / **garden** / **terrace** base on its **district** and **floor**. 
 * Plotting the relation between **b_type** and **built** allowed me to easily impute missing values based on corresponding **b_type** / **built** column since they are heavily related(as shown below).
+
 ![Image 2](img/btyp.png)
 * In **elevator** column after plotting the data I noticed some incorrext values. I've overriden the previous data by choosing what % of buildings of each height should have an elevator.
+
 ![Image 3](img/elev.png)
 
 #### Feature Engineering
@@ -91,6 +95,60 @@ All these models performed very similarly, so I will only show results from Line
 | R²      | 0.7489847425925041   |
 
 As we can see the model doesn't perform perfectly with RMSE being very high. However R² score implies that the model is reasonably well fit.
+
 ![Image 3](img/linreg.png)
+
 After inspecting these plots we can see that the model clearly has trouble with predicting apartments that have bigger value. \
-Additionally we can see that the model generalises pretty well, but it's too simple to learn all paterns in data(slow growth of validation curve). 
+Additionally we can see that the model generalises pretty well, but it's too simple to learn all paterns in data(slow growth of validation curve). \
+Since the model is not overfitting it's not a surprise that Ridge, Lasso and ElasticNet provided the same results, I don't think it was neccessary to even test them. 
+
+#### Polynomial Regression with degree=2
+
+##### Polynomial Regression with Linear Regression
+
+| Metric    | Value              |
+|-----------|--------------------|
+| MAE       | 175419.16          |
+| MSE       | 81037210690.86     |
+| RMSE      | 284670.35          |
+| R²        | 0.8363             |
+
+At first it looks like this model perform better than any previous ones. RMSE is lower and R^2 is higher. Let's take a look at residuals and learning curves. 
+
+![Image 4](img/poly2linreg.png)
+
+By looking at learning curves plot we can see that the model is massively overfitted. I'll check if applying regularization methods such as Ridge Regression or ElasticNet will help with overfitting.
+
+##### Polynomial Regression with Ridge Regression
+
+| Metric | Value           |
+|--------|-----------------|
+| MAE    | 175302.10853888627 |
+| MSE    | 80995360301.71964 |
+| RMSE   | 284596.83817941416 |
+| R²     | 0.8363379437994527 |
+
+The results are similar to previous model, let's see if the model is still overfitted. 
+
+![Image 4](img/poly2ridge.png)
+
+The model still has trouble with predicting larger values correctly, but it seems like it's not overfitted anymore. Cross Validation using KFolds confirms that. 
+
+| Metric                         | Value               |
+|--------------------------------|---------------------|
+| Cross-Validation R² Scores     | 0.83633794, 0.82986827, 0.83086837, 0.82724198, 0.84016575 |
+| Mean Cross-Validation R² Score | 0.832896461490891   |
+| Standard Deviation              | 0.004689193688590963 |
+
+##### Polynomial Regression with ElasticNet
+
+| Metric   | Value               |
+|----------|---------------------|
+| MAE      | 175407.11463677013  |
+| MSE      | 80828250968.84488   |
+| RMSE     | 284303.09700888745  |
+| R²       | 0.8366756107587292  |
+
+Using ElasticNet slightly improved RMSE and R², while preventing overfitting(see plots below). However training and validating this model takes a lot of time.
+
+![Image 4](img/poly2elas.png)
