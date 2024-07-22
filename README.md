@@ -6,7 +6,7 @@ My goal was to build a model capable of predicting prices of apartments in Warsa
 The data I will be using comes from Otodom website and I got it using my own [webscraper](https://github.com/mateuszel/otodom-datascraper).
 
 ### Data Cleaning and EDA
-The first step was formatting the data. \
+##### Formatting and cleaning the data
 Most of the data included non-numeric characters, so I had to format it. This allowed me to find the amount of missing values in each column.
 | Column | Missing Values |
 | --- | ---: |
@@ -29,3 +29,16 @@ Most of the data included non-numeric characters, so I had to format it. This al
 |district      |     313|
 |subdistrict   |     786|
 |nbhood        |   19279|
+
+##### Imputing missing values
+
+Columns that had the most *NaN* values were entirely dropped and all rows with missing values in my target variable column were dropped aswell.
+
+Methods of imputing missing values in selected columns:
+
+* Values in column *rent* are strongly connected to 
+both *area* and *district*, so I imputed missing values by calculating mean *rent_per_sqm* for each *district* and multiplying it by apartments *area*.
+* For columns *balcony*, *terrace* and *garden* I was able to eliminate some incorrect data after plotting it:
+![Image 1](img/balcony.png)  ![Image 2](img/terrace.png)  ![Image 3](img/garden.png)
+
+
