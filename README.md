@@ -40,4 +40,14 @@ Methods of imputing missing values in selected columns:
 both *area* and *district*, so I imputed missing values by calculating mean *rent_per_sqm* for each *district* and multiplying it by apartments *area*.
 * For columns *balcony*, *terrace* and *garden* I was able to eliminate some incorrect data after plotting it:
 ![Image 1](img/bal_ter_gar.png)
+After that I imputed missing values by calculating the probability of apartment having a *balcony* / *garden* / *terrace* base on its *district* and *floor*. 
+* Plotting the relation between *b_type* and *built* allowed me to easily impute missing values based on corresponding *b_type* / *built* column since they are heavily related(as shown below).
+![Image 2](img/btyp.png)
+* In *elevator* column after plotting the data I noticed some incorrext values. I've overriden the previous data by choosing what % of buildings of each height should have an elevator.
+![Image 2](img/elev.png)
 
+##### Feature Engineering
+Initially I converted **location** column into four new ones: **district**, **subdistrct**, **nbhood**, **street** using ``Geopy``. According to my research, a column **distance** containing distances from apartments to city center is very useful. Because there was too many missing values in **nbood** and **street** I calculated the distances based on subdistrict*. Using ``Google GeoCoding API`` I extracted coordinates of each **subdistrict's** center, then for each apartment I set **distance** to Euclidean distance between its **subdistrict** center and city center + noise.
+
+##### Outliers and incorrect values
+My last step was handling outliers and looking for incorrect data. There weren't many outliers, some of them I handled one by one, some of them were dropped. The same goes for incorrect data. After that my dataset was ready for modelling. 
