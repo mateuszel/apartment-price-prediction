@@ -39,6 +39,5 @@ Methods of imputing missing values in selected columns:
 * Values in column *rent* are strongly connected to 
 both *area* and *district*, so I imputed missing values by calculating mean *rent_per_sqm* for each *district* and multiplying it by apartments *area*.
 * For columns *balcony*, *terrace* and *garden* I was able to eliminate some incorrect data after plotting it:
-![Image 1](img/balcony.png)  ![Image 2](img/terrace.png)  ![Image 3](img/garden.png)
-
+![Image 1](img/bal_ter_gar.png)
 
