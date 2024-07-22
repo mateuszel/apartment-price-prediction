@@ -130,7 +130,7 @@ By looking at learning curves plot we can see that the model is massively overfi
 
 The results are similar to previous model, let's see if the model is still overfitted. 
 
-![Image 4](img/poly2ridge.png)
+![Image 5](img/poly2ridge.png)
 
 The model still has trouble with predicting larger values correctly, but it seems like it's not overfitted anymore. Cross Validation using KFolds confirms that. 
 
@@ -151,4 +151,92 @@ The model still has trouble with predicting larger values correctly, but it seem
 
 Using ElasticNet slightly improved RMSE and R², while preventing overfitting(see plots below). However training and validating this model takes a lot of time.
 
-![Image 4](img/poly2elas.png)
+![Image 6](img/poly2elas.png)
+
+#### Polynomial Regression with degree=3
+
+##### Polynomial Regression with Linear Regression
+
+| Metric   | Value               |
+|----------|---------------------|
+| MAE      | 165946.26930491923  |
+| MSE      | 158481574608.6581   |
+| RMSE     | 398097.4436098003   |
+| R²       | 0.6797665906573818  |
+
+This model takes much more computation time than previous ones and performs much worse. We can see a significant increase in RMSE and decrease in R². It is likely that the model is heavily overfitting the data because of its complexity. 
+
+![Image 7](img/poly3linreg.png)
+
+The above plots confirm that the model is overtfitted. Let's try using Ridge Regression to avoid that.
+
+##### Polynomial Regression with Ridge Regression
+
+| Metric   | Value               |
+|----------|---------------------|
+| MAE      | 152737.56249722146  |
+| MSE      | 64101598369.04844   |
+| RMSE     | 253182.93459285214  |
+| R²       | 0.8704740696783173  |
+
+This seems to be performing much better, it's also much faster to train. 
+
+![Image 8](img/poly3ridge.png)
+
+Even though the learning curves look better it's clear that the model is overfitting the data. So we can say that Polynomial Regression with degree=3 is too complex. 
+
+#### Gradient Boosting
+
+First, I found the optimal value of hyperparameter ``n_estimators = 1500``. Model trained with this value performs very well and is probably not overfitting.
+
+| Metric   | Value               |
+|----------|---------------------|
+| MAE      | 112232.27444028766  |
+| MSE      | 32012149872.516144  |
+| RMSE     | 178919.394903169    |
+| R²       | 0.9353151309899803  |
+
+We can see a very big improvement in RMSE comparison to any previous model. 
+
+![Image 9](img/gb.png)
+
+The learning curves look rather healthy and show that the model is not overfitting(or it's overfitting a little). This model is the best so far, it's accurate and don't require a long training time. However I could've tuned other hyperparameters. 
+
+#### Regression Tree
+
+After trying multiple values of hyperparameter ``max_depth`` I decided that ``max_depth=11`` gives right balance between overfitting probability and accuracy.
+
+| Metric | Value                |
+|--------|----------------------|
+| MAE    | 132525.4101994279    |
+| MSE    | 59096443437.29667    |
+| RMSE   | 243097.6006407646    |
+| R²     | 0.8805876606874978   |
+
+We can see that that this model is a little bit less accurate than model using Gradient Boosting. 
+
+![Image 10](img/regtree.png)
+
+By examining the learning curves we can see that it's more probable that the model is overfitting than Gradient Boosting model is overfitting. 
+
+#### Random Forest
+
+After trying different values of hyperparameters I came up with following values: ``n_estimators=100``, ``max_depth=12``, ``min_samples_split=5``, ``max_leaf_nodes=200``.
+
+| Metric | Value |
+|--------|-------|
+| MAE    | 147417.78 |
+| MSE    | 51150205159.74 |
+| RMSE   | 226164.11 |
+| R²     | 0.8966 |
+
+![Image 10](img/rfor.png)
+
+We can see that this model is slightly less accurate than the one using Gradient Boosting. However it's fitted better than Regression Tree model. 
+
+### Summary
+
+I think that even though some of the models performed very similarly, the two most interesting ones are models using Polynomial Regression with Ridge Regression and Gradient Boosting. \
+Both of these models present acceptable accuracy and their training times are reasonable. \
+While Gradient Boosting turned out to be more accurate, it's more likely that it's overfitting a little bit. \
+I think that in order to make all of the above models more accurate, also on dataset with outliers, I need much more data, which is not so easy to get. 
